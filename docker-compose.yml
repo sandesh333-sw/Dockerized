@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+      - mongo
+    networks:
+      - my-custom-network
+
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5000"
+    environment:
+      MONGO_URI: mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+    networks:
+      - my-custom-network
+
+  mongo:
+    image: mongo:7.0
+    restart: always
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - my-custom-network
+
+volumes:
+  mongodata:
+
+networks:
+  my-custom-network:
+    driver: bridge
